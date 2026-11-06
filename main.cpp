@@ -6,7 +6,6 @@
 #include <cstdlib>
 #include <cerrno>
 using namespace std;
-
 void printSizes() {
     cout << "bool: " << sizeof(bool) << "\nchar: " << sizeof(char) << endl;
     cout << "short int: " << sizeof(short) << "\nint: " << sizeof(int) << endl;
@@ -14,7 +13,6 @@ void printSizes() {
     cout << "float: " << sizeof(float) << "\ndouble: " << sizeof(double) << endl;
     cout << "long double: " << sizeof(long double) << endl;
 }
-
 // Порядок бпйтов x86/x64. Для bool показываем только логический бит.
 void printBits(const void* number, int width, int type) {
     unsigned char bytes[16] = {};
@@ -45,7 +43,6 @@ void printBits(const void* number, int width, int type) {
     else cout << "  E=" << exponent - bias;
     cout << endl;
 }
-
 void printValue(const void* number, int type) {
     cout.precision(type == 7 ? 9 : (type == 8 ? 17 : numeric_limits<long double>::max_digits10));
     cout << "Значение: ";
@@ -62,10 +59,8 @@ void printValue(const void* number, int type) {
     }
     cout << endl;
 }
-
 void printThreeCodes() {
-    int32_t value;
-    int width;
+    int32_t value; int width;
     cout << "Введите целое число (int32_t): ";
     if (!(cin >> value)) return;
     cout << "Разрядность от 2 до 32: ";
@@ -82,11 +77,9 @@ void printThreeCodes() {
     uint32_t codes[] = {sign | mag, value < 0 ? sign | (~mag & (mask >> 1)) : mag, (uint32_t)value & mask};
     const char* names[] = {"Прямой: ", "Обратный: ", "Дополнительный: "};
     for (int i = 0; i < 3; ++i) {
-        cout << names[i];
-        printBits(&codes[i], width, 4);
+        cout << names[i]; printBits(&codes[i], width, 4);
     }
 }
-
 void readReal(void* number, int type) {
     string text;
     if (!(cin >> text)) return;
@@ -108,7 +101,6 @@ void readReal(void* number, int type) {
         cin.setstate(ios::failbit);
     }
 }
-
 void changeBit(void* number, int width, int type, int k, int action) {
     unsigned char bytes[16];
     memcpy(bytes, number, (width + 7) / 8);
@@ -119,11 +111,7 @@ void changeBit(void* number, int width, int type, int k, int action) {
     if (type == 1) *(bool*)number = bytes[0] != 0;
     else memcpy(number, bytes, (width + 7) / 8);
 }
-
-void invertSign(void* number, int width, int type) {
-    changeBit(number, width, type, width - 1, 3);
-}
-
+void invertSign(void* number, int width, int type) { changeBit(number, width, type, width - 1, 3); }
 int main() {
     printSizes();
     cout << "Дробные числа вводите через точку.\n";
@@ -178,8 +166,7 @@ int main() {
             else if (digits == 113 && exponent == 16384) width = 128;
             else { cout << "Этот формат long double не поддерживается.\n"; continue; }
         }
-        printValue(number, type);
-        printBits(number, width, type);
+        printValue(number, type); printBits(number, width, type);
         if (action == 1) continue;
         if (action == 4) invertSign(number, width, type);
         else {
@@ -193,8 +180,7 @@ int main() {
             changeBit(number, width, type, k, operation);
         }
         cout << "После изменения:";
-        printValue(number, type);
-        printBits(number, width, type);
+        printValue(number, type); printBits(number, width, type);
     }
     return 0;
 }
